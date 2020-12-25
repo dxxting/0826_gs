@@ -71,22 +71,22 @@ export default {
             
             // )
             const  {keyword} =this
-            const lacation ={
-                name:'search'
+            const location ={
+                name:'search',
+                query:this.$route.query
             }
             if(keyword){
-                lacation.params ={keyword}
-                lacation.query ={
-                    keyword2:this.keyword.toUpperCase()
-                }
+
+                location.params ={keyword}
+                
             }
             //通过catch()捕获错误
-            this.$router.push(lacation)
+            this.$router.push(location)
 
-            // this.$router.push(lacation).catch(()=>{})
+            // this.$router.push(location).catch(()=>{})
             //指定成功的回调
-            // this.$router.push(lacation,()=>{})
-            // this.$router.push(lacation,undefined,()=>{})
+            // this.$router.push(location,()=>{})
+            // this.$router.push(location,undefined,()=>{})
         }
     }
 }

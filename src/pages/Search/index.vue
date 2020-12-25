@@ -1,7 +1,7 @@
 <template>
     <div>
-        {{keyword}}
-        {{keyword2}}
+        <TypeNav></TypeNav>
+        <!-- {{keyword}} -->
     </div>
 </template>
 

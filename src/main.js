@@ -2,9 +2,12 @@ import Vue from 'vue'
 import App from '@/App'
 import router from '@/router'
 import store from './store'
+import './plugins/swiper'
+
 
 //  全局注册的组件
 import TypeNav from '@/components/TypeNav'
+// import 'swiper/css/swiper.css'//所有组件都能用上这个组件
 Vue.component('TypeNav',TypeNav)
 Vue.config.productionTip = false
 new Vue({
