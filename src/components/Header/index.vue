@@ -55,6 +55,10 @@ export default {
             keyword:'',
         }
     },
+    
+    mounted(){//绑定事件
+        this.$bus.$on('clearKeyword',this.clearKeyword)
+    },
     methods:{
         toSearch(){
             // this.$router.push(`/search/${this.keyword}`)
@@ -81,12 +85,23 @@ export default {
                 
             }
             //通过catch()捕获错误
-            this.$router.push(location)
+            if(this.$route.path !=='/'){
+                
+                this.$router.replace(location)
+            }else{
+
+                this.$router.push(location)
+
+            }
+            
 
             // this.$router.push(location).catch(()=>{})
             //指定成功的回调
             // this.$router.push(location,()=>{})
             // this.$router.push(location,undefined,()=>{})
+        },
+        clearKeyword(){
+            this.keyword=''
         }
     }
 }

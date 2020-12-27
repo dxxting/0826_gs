@@ -91,7 +91,13 @@ export default {
                 params:this.$route.params //携带已有的params参数
 
             }
-                    this.$router.push(location)
+            if(this.$route.path !=='/'){
+                this.$router.replace(location)
+            }else{
+                this.$router.push(location)
+
+            }
+                    
             }
             
             
@@ -100,7 +106,7 @@ export default {
             if(this.currentIndex !==-2){
                 this.currentIndex=index
             }
-        },100),
+        },50),
         showFirst(){
             this.currentIndex=-1
             this.isShowFirst =true

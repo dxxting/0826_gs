@@ -25,15 +25,23 @@ export default {
   //     this.$store.dispatch('getCategoryList')
   // }
   mounted(){
-        this.getBaseCategoryList()
+        this.getCategoryList()
         this.getBannerList()
+        this.getRecommends()
+        this.getFloors()
     },
     methods:{
-        getBaseCategoryList(){
-            this.$store.dispatch('getBaseCategoryList')
+        getCategoryList(){
+            this.$store.dispatch('getCategoryList')
         },
         getBannerList(){
           this.$store.dispatch('getBannerList')
+        },
+        getRecommends(){
+          this.$store.dispatch('getRecommends')
+        },
+        getFloors(){
+          this.$store.dispatch('getFloors')
         }
     }
 }
