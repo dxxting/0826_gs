@@ -9,8 +9,10 @@ import './mock/mockServer'
 
 //  全局注册的组件
 import TypeNav from '@/components/TypeNav'
+import Pagination from '@/components/Pagination'
 // import 'swiper/css/swiper.css'//所有组件都能用上这个组件
 Vue.component('TypeNav',TypeNav)
+Vue.component('Pagination',Pagination)
 Vue.config.productionTip = false
 new Vue({
   beforeCreate() {

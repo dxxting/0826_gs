@@ -34,11 +34,15 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{active:orderArr[0]==='1'}" @click="setOrder('1')">
+                  <a href="javaScript:;">综合
+                    <i class='iconfont' :class="orderArr[1]==='desc' ? 'icon-down' : 'icon-up'" v-if="orderArr[0]==='1'"></i>
+                  </a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
+                <li :class="{active:orderArr[0]==='3'}" @click="setOrder('3')">
+                  <a href="javaScript:;">销量
+                    <i class='iconfont' :class="orderArr[1]==='desc' ? 'icon-down' : 'icon-up'" v-if="orderArr[0]==='3'"></i>
+                  </a>
                 </li>
                 <li>
                   <a href="#">新品</a>
@@ -46,11 +50,10 @@
                 <li>
                   <a href="#">评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active:orderArr[0]==='2'}" @click="setOrder('2')">
+                  <a href="javaScript:;">价格
+                    <i class='iconfont' :class="orderArr[1]==='desc' ? 'icon-down' : 'icon-up'" v-if="orderArr[0]==='2'"></i>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -83,35 +86,17 @@
             
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <!-- 分页器要做的事情1.显示当前页码,2.显示总条数 3.显示总的页码
+          前面三点需要从父组件给子组件传递三个数据 当前页 总条数 每页的数量
+          4.连续页数 也是由父组件传递给子组件 一般都是奇数
+            -->
+            <Pagination
+            :currentPageNum="searchParams.pageNo"
+            :pageSize="searchParams.pageSize"
+            :total="goodsListInfo.total"
+            :continueNum='5'
+            @changeNum="changeNum"></Pagination>
+          
         </div>
       </div>
     </div>
@@ -120,7 +105,8 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
+
+import { mapGetters, mapState } from 'vuex'
   import SearchSelector from './SearchSelector/SearchSelector'
   export default {
     name: 'Search',
@@ -139,7 +125,7 @@ import { mapGetters } from 'vuex'
               trademark: '', // 品牌: "ID:品牌名称"示例: "1:苹果"
               order: '1:desc', // 排序方式 1: 综合,2: 价格 asc: 升序,desc: 降序 示例: "1:desc"
               pageNo: 1, // 页码
-              pageSize: 10, // 每页数量
+              pageSize: 2, // 每页数量                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
           }
       }
     },
@@ -153,6 +139,7 @@ import { mapGetters } from 'vuex'
   methods:{
     //获取商品列表信息数据
       getGoodsListInfo(){
+        // this.searchParams.pageNo=1
         this.$store.dispatch('getGoodsListInfo',this.searchParams)
       },
       //处理请求参数
@@ -167,11 +154,19 @@ import { mapGetters } from 'vuex'
             category2Id,
             category3Id,
             keyword
-          }
+          };
+          //把最终参数当中的空串和属性去掉
+          Object.keys(searchParams).forEach((item)=>{
+            if(searchParams[item]==='') {
+              delete searchParams[item];
+            }
+          });
+          searchParams.pageNo=1
           this.searchParams =searchParams
       },
       //删除面包屑的类名
       removeCategoryName(){
+        this.searchParams.pageNo=1
         //清除数据
         // this.searchParams.categoryName=undefined
         delete this.searchParams.categoryName
@@ -187,6 +182,7 @@ import { mapGetters } from 'vuex'
       },
       //删除面包屑的关键字
       removeKeyword(){
+        this.searchParams.pageNo=1
         delete this.searchParams.categoryName
 
         this.$bus.$emit('clearKeyword')//传递数据
@@ -199,15 +195,18 @@ import { mapGetters } from 'vuex'
       },
       //根据品牌搜索
       searchForTrademark(trademark){
+        this.searchParams.pageNo=1
         //获取子组件传递过来的trademark对象,拼接成参数所需要的格式
         let trademarkInfo= `${trademark.tmId}:${trademark.tmName}`
         //修改参数
         this.searchParams.trademark =trademarkInfo
+        // this.$set(this.searchParams,'trademark',trademark)
         //发送请求
         this.getGoodsListInfo()
       },
       //删除面包屑列表的品牌
       removeTrademark(){
+        this.searchParams.pageNo=1
         //删除列表品牌
         this.searchParams.trademark =undefined
         //发送请求 路径不显示直接发送请求
@@ -216,6 +215,7 @@ import { mapGetters } from 'vuex'
       },
       //根据属性搜索
       searchForAttrs(attr,attrValue){
+        this.searchParams.pageNo=1
         let prop =`${attr.attrId}:${attrValue}:${attr.attrName}`
 
         //some every 
@@ -231,12 +231,39 @@ import { mapGetters } from 'vuex'
       },
       //删除面包屑的属性
       removeProp(index){
+        this.searchParams.pageNo=1
         this.searchParams.props.splice(index,1)
         this.getGoodsListInfo()
       },
+      setOrder(orderFlag){
+        this.searchParams.pageNo=1
+        this.orderArr
+        let [flag,type] =this.orderArr
+        if(orderFlag===flag){
+          type=type==='desc' ?  'asc' :'desc'
+        }else{
+          flag=orderFlag
+          type ='desc'
+        }
+          this.searchParams.order=flag +':' +type
+          this.getGoodsListInfo()
+        
+      },
+      //点击分页器的按钮改变页码
+      changeNum(page){
+          this.searchParams.pageNo =page
+          this.getGoodsListInfo()
+      }
+      
   },
   computed:{
-    ...mapGetters(['goodsList'])
+    ...mapGetters(['goodsList']),
+    ...mapState({
+      goodsListInfo:state=>state.search.goodsListInfo
+    }),
+      orderArr(){
+        return this.searchParams.order.split(':')
+      }
   },
   watch:{
     $route:{
